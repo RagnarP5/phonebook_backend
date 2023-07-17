@@ -1,12 +1,15 @@
+// const express = require('express')
 const express = require('express')
-const morgan = require('morgan')
-const {request, response} = require("express");
-
 const app = express()
-morgan.token('type', (request, response) => {
-    return request.headers['content-type']
-})
 
+const cors = require('cors')
+const bodyParser = require("body-parser");
+app.use(cors())
+app.use(express.static('build'))
+// // const {request, response} = require("express");
+
+//
+//
 let persons = [
     {
         "id": 1,
@@ -29,15 +32,15 @@ let persons = [
         "number": "39-23-6423122"
     }
 ]
-
+//
 app.get('/', (request, response) => {
     response.send("<h1>Hello World!</h1>")
 })
-
+//
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
-
+//
 app.get('/info', (request, response) => {
     const personsLength = persons.length
     const date = new Date()
@@ -70,7 +73,7 @@ const generateId = () => {
     return maxId + 1
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', bodyParser.json(), (request, response) => {
     const body = request.body
     if (!body.name){
         return response.status(400).json({
@@ -92,6 +95,7 @@ app.post('/api/persons', (request, response) => {
         number: body.number,
         id: generateId()
     }
+
 
     response.json(person)
 })
